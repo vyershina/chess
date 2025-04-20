@@ -1,18 +1,20 @@
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <vector>
 
+#include "piece.hpp"
+
 void replaySystem();
 
 std::vector<std::vector<std::string>> readInput();
 
+// counts number of '\n' to declare 2d vector.
 int countNewLines(const std::string* str);
 
 void vectorPopulation(const std::string* moves_str,
                       std::vector<std::vector<std::string>>& moves);
-
-void printMoves(const std::vector<std::vector<std::string>>& moves);
 
 std::vector<std::vector<std::string>> readInput() {
   // getting the PGN
@@ -24,14 +26,13 @@ std::vector<std::vector<std::string>> readInput() {
   std::regex pattern("(\\d+\\.)");
   moves_str = std::regex_replace(moves_str, pattern, "\n");
 
-  // counting the number of '\n' to declare a 2d vector to store all the moves.
   int size = countNewLines(&moves_str);
   std::vector<std::vector<std::string>> moves(size,
                                               std::vector<std::string>(1, ""));
-
   vectorPopulation(&moves_str, moves);
-  printMoves(moves);
-
+  for (int i = 0; i < size; i++) {
+    std::cout << moves[i][0] << " " << moves[i][1] << "\n";
+  }
   return moves;
 }
 
@@ -68,14 +69,15 @@ void vectorPopulation(const std::string* moves_str,
   }
 }
 
-void printMoves(const std::vector<std::vector<std::string>>& moves) {
-  for (int i = 0; i < 53; i++) {
-    std::cout << moves[i][0] << " " << moves[i][1] << " " << moves[52][2]
-              << std::endl;
-  }
-}
-
 int main() {
-  readInput();
+  Piece piece;
+  piece.setFile(4);
+  piece.setRank(3);
+  piece.setSide('w');
+  piece.setType('K');
+  std::vector<std::string> moves = piece.possibleMoves();
+  for (int i = 0; i < moves.size(); i++) {
+    std::cout << moves[i] << " ";
+  }
   return 0;
 }
