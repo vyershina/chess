@@ -1,14 +1,13 @@
-#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <vector>
 
-#include "piece.hpp"
+#include "board.hpp"
 
 void replaySystem();
 
-std::vector<std::vector<std::string>> readInput();
+std::vector<std::vector<std::string>> parseInput();
 
 // counts number of '\n' to declare 2d vector.
 int countNewLines(const std::string* str);
@@ -16,23 +15,26 @@ int countNewLines(const std::string* str);
 void vectorPopulation(const std::string* moves_str,
                       std::vector<std::vector<std::string>>& moves);
 
-std::vector<std::vector<std::string>> readInput() {
+void replaySystem() {
+  std::vector<std::vector<std::string>> moves = parseInput();
+  Board board;
+  board.boardPrinter();
+}
+
+std::vector<std::vector<std::string>> parseInput() {
   // getting the PGN
   std::fstream game_file("game.txt");
   std::string moves_str;
   getline(game_file, moves_str);
 
   // regex is a digit followed by a literal dot
-  std::regex pattern("(\\d+\\.)");
-  moves_str = std::regex_replace(moves_str, pattern, "\n");
+  std::regex move_num("(\\d+\\.)");
+  moves_str = std::regex_replace(moves_str, move_num, "\n");
 
   int size = countNewLines(&moves_str);
   std::vector<std::vector<std::string>> moves(size,
-                                              std::vector<std::string>(1, ""));
+                                              std::vector<std::string>(2, ""));
   vectorPopulation(&moves_str, moves);
-  for (int i = 0; i < size; i++) {
-    std::cout << moves[i][0] << " " << moves[i][1] << "\n";
-  }
   return moves;
 }
 
@@ -50,19 +52,25 @@ void vectorPopulation(const std::string* moves_str,
                       std::vector<std::vector<std::string>>& moves) {
   int i = 0;
   int move_num = 0;
-  int side = 0;
+  bool side = 0;
+  std::regex valid_move(
+      "(([RNBKQ])?([a-h])?([1-8])?(x)?([a-h][1-8])(\\+|\\#)?)?((O-O)(-O)?)?");
   for (char c : *moves_str) {
     if (c == '\n') {
       if (i == 0) {
         i++;
         continue;
       }
-      side = 0;
+      if (std::regex_match(moves[move_num][side], valid_move) == false) {
+        std::cout << moves[move_num][side] << " -> ";
+        std::cout << "Invalid move detected!\n";
+      }
+      side = !side;
       move_num++;
     } else if (c == '\0') {
       return;
     } else if (c == ' ') {
-      side++;
+      side = !side;
     } else {
       moves[move_num][side] += c;
     }
@@ -70,14 +78,6 @@ void vectorPopulation(const std::string* moves_str,
 }
 
 int main() {
-  Piece piece;
-  piece.setFile(4);
-  piece.setRank(3);
-  piece.setSide('w');
-  piece.setType('K');
-  std::vector<std::string> moves = piece.possibleMoves();
-  for (int i = 0; i < moves.size(); i++) {
-    std::cout << moves[i] << " ";
-  }
+  replaySystem();
   return 0;
 }

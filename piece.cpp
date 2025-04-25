@@ -363,6 +363,7 @@ std::vector<std::string> Piece::possibleMoves() {
   return possible_moves;
 }
 
+// setters
 void Piece::setRank(int n) { rank = n; }
 
 void Piece::setFile(int n) { file = n; }
@@ -370,3 +371,12 @@ void Piece::setFile(int n) { file = n; }
 void Piece::setSide(char c) { side = c; }
 
 void Piece::setType(char c) { type = c; }
+
+// getters
+char Piece::getType() { return type; }
+
+int Piece::getFile() { return file; }
+
+int Piece::getRank() { return rank; }
+
+char Piece::getSide() { return side; }

@@ -11,10 +11,12 @@ class Piece {
   std::vector<std::string> possibleMoves();
 
   void setRank(int n);
-
   void setFile(int n);
-
   void setSide(char c);
-
   void setType(char c);
+
+  char getType();
+  int getRank();
+  int getFile();
+  char getSide();
 };
