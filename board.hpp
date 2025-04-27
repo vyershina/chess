@@ -3,9 +3,11 @@
 class Board {
  public:
   Board();
-  void boardPrinter();
-
-  std::vector<Piece> pieces;
+  void printBoard();
+  void saveState();
+  void movePiece(std::string move, int side);
 
  private:
+  std::vector<Piece> pieces;
+  std::vector<Board> states;
 };

@@ -7,21 +7,25 @@
 
 void replaySystem();
 
-std::vector<std::vector<std::string>> parseInput();
+std::vector<std::string> parseInput();
 
 // counts number of '\n' to declare 2d vector.
 int countNewLines(const std::string* str);
 
-void vectorPopulation(const std::string* moves_str,
-                      std::vector<std::vector<std::string>>& moves);
+void movesInVector(std::string moves_str, std::vector<std::string>& moves);
 
 void replaySystem() {
-  std::vector<std::vector<std::string>> moves = parseInput();
+  std::vector<std::string> moves = parseInput();
   Board board;
-  board.boardPrinter();
+  for (int i = 0; i < moves.size(); i++) {
+    board.printBoard();
+    std::cout << "\n";
+    int side = i % 2;
+    board.movePiece(moves[i], side);
+  }
 }
 
-std::vector<std::vector<std::string>> parseInput() {
+std::vector<std::string> parseInput() {
   // getting the PGN
   std::fstream game_file("game.txt");
   std::string moves_str;
@@ -32,9 +36,9 @@ std::vector<std::vector<std::string>> parseInput() {
   moves_str = std::regex_replace(moves_str, move_num, "\n");
 
   int size = countNewLines(&moves_str);
-  std::vector<std::vector<std::string>> moves(size,
-                                              std::vector<std::string>(2, ""));
-  vectorPopulation(&moves_str, moves);
+
+  std::vector<std::string> moves(size * 2, "");
+  movesInVector(moves_str, moves);
   return moves;
 }
 
@@ -48,31 +52,33 @@ int countNewLines(const std::string* moves_str) {
   return count;
 }
 
-void vectorPopulation(const std::string* moves_str,
-                      std::vector<std::vector<std::string>>& moves) {
+void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
   int i = 0;
   int move_num = 0;
-  bool side = 0;
   std::regex valid_move(
-      "(([RNBKQ])?([a-h])?([1-8])?(x)?([a-h][1-8])(\\+|\\#)?)?((O-O)(-O)?)?");
-  for (char c : *moves_str) {
-    if (c == '\n') {
+      "(([RNBKQ])?([a-h])?([1-8])?(x)?([a-h][1-8])(\\+|\\#)?)"
+      "|((O-O)(-O)?)"
+      "|(([a-h][1-8])(=)([RNBQ]))");
+  for (int i = 0; i < moves_str.length(); i++) {
+    if (moves_str[i] == '\n') {
       if (i == 0) {
-        i++;
         continue;
       }
-      if (std::regex_match(moves[move_num][side], valid_move) == false) {
-        std::cout << moves[move_num][side] << " -> ";
+      if (std::regex_match(moves[move_num], valid_move) == false) {
+        std::cout << moves[move_num] << " -> ";
         std::cout << "Invalid move detected!\n";
       }
-      side = !side;
       move_num++;
-    } else if (c == '\0') {
+    } else if (moves_str[i] == '\0') {
       return;
-    } else if (c == ' ') {
-      side = !side;
+    } else if (moves_str[i] == ' ') {
+      if (moves_str[i + 1] == '\n') {
+        continue;
+      }
+      move_num++;
+      continue;
     } else {
-      moves[move_num][side] += c;
+      moves[move_num] += moves_str[i];
     }
   }
 }
