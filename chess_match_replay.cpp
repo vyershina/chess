@@ -19,9 +19,10 @@ void replaySystem() {
   Board board;
   for (int i = 0; i < moves.size(); i++) {
     board.printBoard();
+    std::cout << "move num: " << i + 1;
     std::cout << "\n";
     int side = i % 2;
-    board.movePiece(moves[i], side);
+    board.passMove(moves[i], side);
   }
 }
 

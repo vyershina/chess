@@ -1,15 +1,21 @@
 #include <iostream>
 
+class Board;
+
 class Piece {
  private:
-  int rank;
-  int file;
+  Board* local_board;
   int side;
-  char symb;
+  int file;
+  int rank;
   char type;
+  char symb;
   void disambiguate(std::string move, std::vector<std::string>& possible_moves);
 
  public:
+  Piece(Board* board, int side, int file, int rank, char type, char symb);
+  void makeMove(Piece* piece, int fin_file, int fin_rank, int castle,
+                bool taking);
   std::vector<std::string> possibleMoves();
 
   void setRank(int n);

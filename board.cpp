@@ -4,145 +4,68 @@
 
 #include "board.hpp"
 
-void pieceMover(std::vector<std::string> moves);
-
 Board::Board() {
-  Piece piece;
-
   // Pawns
   for (int i = 0; i < 8; i++) {
-    piece.setSymb('P');
-    piece.setType('P');
-    piece.setRank(1);
-    piece.setFile(i);
-    piece.setSide(0);
-    pieces.push_back(piece);
+    Piece pawn(this, 0, 1, i, 'P', 'P');
+    pieces.push_back(pawn);
   }
   for (int i = 0; i < 8; i++) {
-    piece.setSymb('p');
-    piece.setType('P');
-    piece.setRank(6);
-    piece.setFile(i);
-    piece.setSide(1);
-    pieces.push_back(piece);
+    Piece pawn(this, 1, 6, i, 'P', 'p');
+    pieces.push_back(pawn);
   }
 
   // Rooks
-  piece.setFile(0);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('R');
-  piece.setSymb('R');
-  pieces.push_back(piece);
-
-  piece.setFile(7);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('R');
-  piece.setSymb('R');
-  pieces.push_back(piece);
-
-  piece.setFile(0);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('R');
-  piece.setSymb('r');
-  pieces.push_back(piece);
-
-  piece.setFile(7);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('R');
-  piece.setSymb('r');
-  pieces.push_back(piece);
+  {
+    Piece wrook1(this, 0, 0, 0, 'R', 'R');
+    pieces.push_back(wrook1);
+    Piece wrook2(this, 0, 0, 7, 'R', 'R');
+    pieces.push_back(wrook2);
+    Piece brook1(this, 1, 7, 0, 'R', 'r');
+    pieces.push_back(brook1);
+    Piece brook2(this, 1, 7, 7, 'R', 'r');
+    pieces.push_back(brook2);
+  }
 
   // Bishop
-  piece.setFile(2);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('B');
-  piece.setSymb('B');
-  pieces.push_back(piece);
-
-  piece.setFile(5);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('B');
-  piece.setSymb('B');
-  pieces.push_back(piece);
-
-  piece.setFile(2);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('B');
-  piece.setSymb('b');
-  pieces.push_back(piece);
-
-  piece.setFile(5);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('B');
-  piece.setSymb('b');
-  pieces.push_back(piece);
+  {
+    Piece wbishop1(this, 0, 0, 2, 'B', 'B');
+    pieces.push_back(wbishop1);
+    Piece wbishop2(this, 0, 0, 5, 'B', 'B');
+    pieces.push_back(wbishop2);
+    Piece bbishop1(this, 1, 7, 2, 'B', 'b');
+    pieces.push_back(bbishop1);
+    Piece bbishop2(this, 1, 7, 5, 'B', 'b');
+    pieces.push_back(bbishop2);
+  }
 
   // Knights
-  piece.setFile(1);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('N');
-  piece.setSymb('N');
-  pieces.push_back(piece);
-
-  piece.setFile(6);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('N');
-  piece.setSymb('N');
-  pieces.push_back(piece);
-
-  piece.setFile(1);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('N');
-  piece.setSymb('n');
-  pieces.push_back(piece);
-
-  piece.setFile(6);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('N');
-  piece.setSymb('n');
-  pieces.push_back(piece);
+  {
+    Piece wknight1(this, 0, 0, 1, 'N', 'N');
+    pieces.push_back(wknight1);
+    Piece wknight2(this, 0, 0, 6, 'N', 'N');
+    pieces.push_back(wknight2);
+    Piece bknight1(this, 1, 7, 1, 'N', 'n');
+    pieces.push_back(bknight1);
+    Piece bknight2(this, 1, 7, 6, 'N', 'n');
+    pieces.push_back(bknight2);
+  }
 
   // Kings
-  piece.setFile(4);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('K');
-  piece.setSymb('K');
-  pieces.push_back(piece);
-
-  piece.setFile(4);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('K');
-  piece.setSymb('k');
-  pieces.push_back(piece);
+  {
+    Piece wking(this, 0, 0, 4, 'K', 'K');
+    pieces.push_back(wking);
+    Piece bking(this, 1, 7, 4, 'K', 'k');
+    pieces.push_back(bking);
+  }
 
   // Queens
-  piece.setFile(3);
-  piece.setRank(0);
-  piece.setSide(0);
-  piece.setType('Q');
-  piece.setSymb('Q');
-  pieces.push_back(piece);
-
-  piece.setFile(3);
-  piece.setRank(7);
-  piece.setSide(1);
-  piece.setType('Q');
-  piece.setSymb('q');
-  pieces.push_back(piece);
+  {
+    Piece wqueen(this, 0, 0, 3, 'Q', 'Q');
+    pieces.push_back(wqueen);
+    Piece bqueen(this, 1, 7, 3, 'Q', 'q');
+    pieces.push_back(bqueen);
+  }
 }
 
 void Board::printBoard() {
@@ -174,31 +97,32 @@ void Board::printBoard() {
     }
     std::cout << "\n";
   }
-  // for (Piece piece : pieces) {
-  //   if (piece.getType() == 'R') {
-  //     std::vector<std::string> moves = piece.possibleMoves();
-  //     std::cout << "\nRook on rank = " << piece.getRank()
-  //               << ", file = " << piece.getFile() << "\n";
-  //     for (int i = 0; i < moves.size(); i++) {
-  //       std::cout << moves[i] << " ";
-  //     }
-  //   }
-  // }
 }
 
-void Board::movePiece(std::string move, int side) {
+void Board::passMove(std::string move, int side) {
   int mv_len = move.length();
   int fin_file = move[mv_len - 2] - 'a';
   int fin_rank = move[mv_len - 1] - '1';
+  int castle = 0;
   char piece_type = move[0];
   bool taking = false;
-  bool placed = false;
 
-  // handle pawns
+  // handle unique
   if (piece_type >= 'a' && piece_type <= 'h') {
     piece_type = 'P';
   } else if (piece_type == 'O') {
     piece_type = 'K';
+    if (mv_len == 5) {
+      castle = 2;
+    } else {
+      castle = 1;
+    }
+  }
+
+  // handle checks and checkmate
+  if (fin_rank + '1' == '+') {
+    fin_file = move[mv_len - 3] - 'a';
+    fin_rank = move[mv_len - 2] - '1';
   }
 
   // handle taking
@@ -216,62 +140,13 @@ void Board::movePiece(std::string move, int side) {
     }
   }
 
-  // handle castling
-  if (move == "O-O-O" || move == "O-O") {
-    for (int i = 0; i < pieces.size(); i++) {
-      if (placed == false) {
-        if (pieces[i].getSide() == side && pieces[i].getType() == piece_type) {
-          std::vector<std::string> possibleMoves = pieces[i].possibleMoves();
-          for (std::string local_move : possibleMoves) {
-            if (local_move == "O-O") {
-              pieces[i].setFile(6);
-            } else {
-              pieces[i].setFile(2);
-            }
-          }
-        }
-        if (pieces[i].getSide() == side && pieces[i].getType() == 'R') {
-          if (move == "O-O") {
-            if (pieces[i].getFile() == 7) {
-              pieces[i].setFile(5);
-              placed = true;
-            }
-          } else {
-            if (pieces[i].getFile() == 0) {
-              pieces[i].setFile(3);
-              placed = true;
-            }
-          }
+  for (int i = 0; i < pieces.size(); i++) {
+    if (pieces[i].getType() == piece_type && pieces[i].getSide() == side) {
+      for (std::string a_move : pieces[i].possibleMoves()) {
+        if (a_move == move) {
+          pieces[i].makeMove(&pieces[i], fin_file, fin_rank, castle, taking);
         }
       }
     }
-  }
-
-  // make moves
-  if (placed == false) {
-    for (int i = 0; i < pieces.size(); i++) {
-      if (pieces[i].getSide() == side && pieces[i].getType() == piece_type) {
-        std::vector<std::string> possible_moves = pieces[i].possibleMoves();
-        for (std::string local_move : possible_moves) {
-          if (local_move == move) {
-            pieces[i].setFile(fin_file);
-            pieces[i].setRank(fin_rank);
-            placed = true;
-          }
-        }
-      }
-    }
-  }
-
-  // when move wasnt made
-  try {
-    if (placed == false) {
-      throw(placed);
-    }
-  } catch (bool placed) {
-    std::cout << "Unable to make move. Terminating.";
-    std::exit(-1);
   }
 }
-
-void Board::saveState() {}

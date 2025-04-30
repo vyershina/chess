@@ -1,7 +1,15 @@
 #include <iostream>
 #include <string>
 
-#include "piece.hpp"
+#include "board.hpp"
+
+Piece::Piece(Board* board, int side, int rank, int file, char type, char symb)
+    : local_board(board),
+      side(side),
+      rank(rank),
+      file(file),
+      type(type),
+      symb(symb) {}
 
 void Piece::disambiguate(std::string move,
                          std::vector<std::string>& possible_moves) {
@@ -20,14 +28,25 @@ std::vector<std::string> Piece::possibleMoves() {
   if (type == 'P') {
     if (side == 0) {
       // normal movement
-      if (rank == 1) {
-        move = file + 'a';
-        move += std::to_string(rank + 3);
-        possible_moves.push_back(move);
+      for (Piece piece : local_board->pieces) {
+        if (piece.getSide() == side && piece.getFile() == file &&
+            piece.getRank() == rank + 1) {
+          break;
+        } else if (piece.getSide() == side && piece.getFile() == file &&
+                   piece.getRank() == rank + 2) {
+          break;
+        } else {
+          move = file + 'a';
+          move += std::to_string(rank + 2);
+          possible_moves.push_back(move);
+          if (rank == 1) {
+            move = file + 'a';
+            move += std::to_string(rank + 3);
+            possible_moves.push_back(move);
+          }
+        }
       }
-      move = file + 'a';
-      move += std::to_string(rank + 2);
-      possible_moves.push_back(move);
+
       // taking
       move = file + 'a';
       move += 'x';
@@ -43,14 +62,24 @@ std::vector<std::string> Piece::possibleMoves() {
     }
     if (side == 1) {
       // normal movement
-      if (rank == 6) {
-        move = file + 'a';
-        move += std::to_string(rank - 1);
-        possible_moves.push_back(move);
+      for (Piece piece : local_board->pieces) {
+        if (piece.getSide() == side && piece.getFile() == file &&
+            piece.getRank() == rank - 1) {
+          break;
+        } else if (piece.getSide() == side && piece.getFile() == file &&
+                   piece.getRank() == rank - 2) {
+          break;
+        } else {
+          move = file + 'a';
+          move += std::to_string(rank);
+          possible_moves.push_back(move);
+          if (rank == 6) {
+            move = file + 'a';
+            move += std::to_string(rank - 1);
+            possible_moves.push_back(move);
+          }
+        }
       }
-      move = file + 'a';
-      move += std::to_string(rank);
-      possible_moves.push_back(move);
       // taking
       move = file + 'a';
       move += 'x';
@@ -426,6 +455,30 @@ std::vector<std::string> Piece::possibleMoves() {
     }
   }
   return possible_moves;
+}
+
+void Piece::makeMove(Piece* piece, int fin_file, int fin_rank, int castle,
+                     bool taking) {
+  if (castle == 1) {
+    for (Piece& rook : local_board->pieces) {
+      if (rook.getFile() == 7 && rook.getRank() == piece->getRank() &&
+          rook.getSide() == piece->getSide()) {
+        rook.setFile(5);
+        piece->setFile(6);
+      }
+    }
+  } else if (castle == 2) {
+    for (Piece& rook : local_board->pieces) {
+      if (rook.getFile() == 0 && rook.getRank() == piece->getRank() &&
+          rook.getSide() == piece->getSide()) {
+        rook.setFile(3);
+        piece->setFile(2);
+      }
+    }
+  } else {
+    piece->setFile(fin_file);
+    piece->setRank(fin_rank);
+  }
 }
 
 // setters

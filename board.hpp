@@ -1,13 +1,14 @@
+#include <iostream>
+
 #include "piece.hpp"
 
 class Board {
  public:
   Board();
   void printBoard();
-  void saveState();
-  void movePiece(std::string move, int side);
+  void passMove(std::string move, int side);
+  std::vector<Piece> pieces;
 
  private:
-  std::vector<Piece> pieces;
   std::vector<Board> states;
 };
