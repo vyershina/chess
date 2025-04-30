@@ -16,6 +16,7 @@ class Piece {
   Piece(Board* board, int side, int file, int rank, char type, char symb);
   void makeMove(Piece* piece, int fin_file, int fin_rank, int castle,
                 bool taking);
+  bool isBlocked(int side, int file2check, int rank2check);
   std::vector<std::string> possibleMoves();
 
   void setRank(int n);

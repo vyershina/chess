@@ -17,6 +17,14 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves);
 void replaySystem() {
   std::vector<std::string> moves = parseInput();
   Board board;
+  // for (Piece piece : board.pieces) {
+  //   if (piece.getType() == 'Q') {
+  //     for (std::string move : piece.possibleMoves()) {
+  //       std::cout << move << "\n";
+  //     }
+  //     break;
+  //   }
+  // }
   for (int i = 0; i < moves.size(); i++) {
     board.printBoard();
     std::cout << "move num: " << i + 1;
