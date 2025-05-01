@@ -26,11 +26,11 @@ void replaySystem() {
   //   }
   // }
   for (int i = 0; i < moves.size(); i++) {
-    board.printBoard();
-    std::cout << "move num: " << i + 1;
-    std::cout << "\n";
     int side = i % 2;
+    std::cout << "\nmove: " << moves[i] << "\nside: " << side
+              << "\nmove num: " << i + 1 << "\n";
     board.passMove(moves[i], side);
+    board.printBoard();
   }
 }
 

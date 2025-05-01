@@ -120,9 +120,10 @@ void Board::passMove(std::string move, int side) {
   }
 
   // handle checks and checkmate
-  if (fin_rank + '1' == '+') {
+  if (move[mv_len - 1] == '+' || move[mv_len - 1] == '#') {
     fin_file = move[mv_len - 3] - 'a';
     fin_rank = move[mv_len - 2] - '1';
+    move.erase(move.end() - 1);
   }
 
   // handle taking
@@ -130,13 +131,6 @@ void Board::passMove(std::string move, int side) {
     if (c == 'x') {
       taking = true;
       break;
-    }
-  }
-  if (taking == true) {
-    for (int i = 0; i < pieces.size(); i++) {
-      if (pieces[i].getRank() == fin_rank && pieces[i].getFile() == fin_file) {
-        pieces.erase(pieces.begin() + i);
-      }
     }
   }
 
