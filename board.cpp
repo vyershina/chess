@@ -1,5 +1,5 @@
-#include <cstdlib>
-#include <exception>
+#include <cstdlib>    // for idk
+#include <exception>  // for exceptions
 #include <iostream>
 
 #include "board.hpp"
@@ -9,64 +9,54 @@ Board::Board() {
   for (int i = 0; i < 8; i++) {
     Piece pawn(this, 0, 1, i, 'P', 'P');
     pieces.push_back(pawn);
-  }
+  }  // end for
   for (int i = 0; i < 8; i++) {
     Piece pawn(this, 1, 6, i, 'P', 'p');
     pieces.push_back(pawn);
-  }
+  }  // end for
 
   // Rooks
-  {
-    Piece wrook1(this, 0, 0, 0, 'R', 'R');
-    pieces.push_back(wrook1);
-    Piece wrook2(this, 0, 0, 7, 'R', 'R');
-    pieces.push_back(wrook2);
-    Piece brook1(this, 1, 7, 0, 'R', 'r');
-    pieces.push_back(brook1);
-    Piece brook2(this, 1, 7, 7, 'R', 'r');
-    pieces.push_back(brook2);
-  }
+  Piece wrook1(this, 0, 0, 0, 'R', 'R');
+  pieces.push_back(wrook1);
+  Piece wrook2(this, 0, 0, 7, 'R', 'R');
+  pieces.push_back(wrook2);
+  Piece brook1(this, 1, 7, 0, 'R', 'r');
+  pieces.push_back(brook1);
+  Piece brook2(this, 1, 7, 7, 'R', 'r');
+  pieces.push_back(brook2);
 
   // Bishop
-  {
-    Piece wbishop1(this, 0, 0, 2, 'B', 'B');
-    pieces.push_back(wbishop1);
-    Piece wbishop2(this, 0, 0, 5, 'B', 'B');
-    pieces.push_back(wbishop2);
-    Piece bbishop1(this, 1, 7, 2, 'B', 'b');
-    pieces.push_back(bbishop1);
-    Piece bbishop2(this, 1, 7, 5, 'B', 'b');
-    pieces.push_back(bbishop2);
-  }
+  Piece wbishop1(this, 0, 0, 2, 'B', 'B');
+  pieces.push_back(wbishop1);
+  Piece wbishop2(this, 0, 0, 5, 'B', 'B');
+  pieces.push_back(wbishop2);
+  Piece bbishop1(this, 1, 7, 2, 'B', 'b');
+  pieces.push_back(bbishop1);
+  Piece bbishop2(this, 1, 7, 5, 'B', 'b');
+  pieces.push_back(bbishop2);
 
   // Knights
-  {
-    Piece wknight1(this, 0, 0, 1, 'N', 'N');
-    pieces.push_back(wknight1);
-    Piece wknight2(this, 0, 0, 6, 'N', 'N');
-    pieces.push_back(wknight2);
-    Piece bknight1(this, 1, 7, 1, 'N', 'n');
-    pieces.push_back(bknight1);
-    Piece bknight2(this, 1, 7, 6, 'N', 'n');
-    pieces.push_back(bknight2);
-  }
+  Piece wknight1(this, 0, 0, 1, 'N', 'N');
+  pieces.push_back(wknight1);
+  Piece wknight2(this, 0, 0, 6, 'N', 'N');
+  pieces.push_back(wknight2);
+  Piece bknight1(this, 1, 7, 1, 'N', 'n');
+  pieces.push_back(bknight1);
+  Piece bknight2(this, 1, 7, 6, 'N', 'n');
+  pieces.push_back(bknight2);
 
   // Kings
-  {
-    Piece wking(this, 0, 0, 4, 'K', 'K');
-    pieces.push_back(wking);
-    Piece bking(this, 1, 7, 4, 'K', 'k');
-    pieces.push_back(bking);
-  }
+  Piece wking(this, 0, 0, 4, 'K', 'K');
+  pieces.push_back(wking);
+  Piece bking(this, 1, 7, 4, 'K', 'k');
+  pieces.push_back(bking);
 
   // Queens
-  {
-    Piece wqueen(this, 0, 0, 3, 'Q', 'Q');
-    pieces.push_back(wqueen);
-    Piece bqueen(this, 1, 7, 3, 'Q', 'q');
-    pieces.push_back(bqueen);
-  }
-}
+  Piece wqueen(this, 0, 0, 3, 'Q', 'Q');
+  pieces.push_back(wqueen);
+  Piece bqueen(this, 1, 7, 3, 'Q', 'q');
+  pieces.push_back(bqueen);
+}  // end Board()
 
 void Board::printBoard() {
   bool exists = false;
@@ -81,23 +71,23 @@ void Board::printBoard() {
           try {
             if (found > 1) {
               throw(found);
-            }
+            }  // end if
           } catch (int found) {
             std::cout << "\nTwo pieces are stacked on top of each other. "
                          "Terminating process. ";
             std::exit(-1);
-          }
+          }  // end try and catch
           exists = true;
-        }
-      }
+        }  // end if
+      }  // end for
       if (exists == false) {
         std::cout << "- ";
-      }
+      }  // end if
       exists = false;
-    }
+    }  // end for
     std::cout << "\n";
-  }
-}
+  }  // end for
+}  // end printBoard()
 
 void Board::passMove(std::string move, int side) {
   int mv_len = move.length();
@@ -116,31 +106,31 @@ void Board::passMove(std::string move, int side) {
       castle = 2;
     } else {
       castle = 1;
-    }
-  }
+    }  // end if(s) and else(s)
+  }  // end if
 
   // handle checks and checkmate
   if (move[mv_len - 1] == '+' || move[mv_len - 1] == '#') {
     fin_file = move[mv_len - 3] - 'a';
     fin_rank = move[mv_len - 2] - '1';
     move.erase(move.end() - 1);
-  }
+  }  // end if
 
   // handle taking
   for (char c : move) {
     if (c == 'x') {
       taking = true;
       break;
-    }
-  }
+    }  // end if
+  }  // end for
 
   for (int i = 0; i < pieces.size(); i++) {
     if (pieces[i].getType() == piece_type && pieces[i].getSide() == side) {
       for (std::string a_move : pieces[i].possibleMoves()) {
         if (a_move == move) {
           pieces[i].makeMove(&pieces[i], fin_file, fin_rank, castle, taking);
-        }
-      }
-    }
-  }
-}
+        }  // end if
+      }  // end for
+    }  // end if
+  }  // end for
+}  // end passMove()

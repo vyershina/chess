@@ -4,11 +4,14 @@
 
 class Board {
  public:
-  Board();
-  void printBoard();
-  void passMove(std::string move, int side);
   std::vector<Piece> pieces;
 
+  // Constructor
+  Board();
+
+  // Instance methods
+  void printBoard();
+  void passMove(std::string move, int side);
+
  private:
-  std::vector<Board> states;
 };
