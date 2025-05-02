@@ -10,6 +10,7 @@ class Piece {
   int rank;
   char type;
   char symb;
+  std::vector<std::string> directions;
 
   // Instance method (in private because it is not called outside of the class)
   void disambiguate(std::string move, std::vector<std::string>& possible_moves);
@@ -23,6 +24,9 @@ class Piece {
                 bool taking);
   bool isBlocked(int side, int file2check, int rank2check);
   std::vector<std::string> possibleMoves();
+  void getPosMovesRec(Piece piece, std::vector<std::string>& possible_moves,
+                      int curr_rank, int curr_file, std::string direction,
+                      bool start);
 
   // Setter methods
   void setRank(int n);
@@ -30,8 +34,10 @@ class Piece {
   void setSide(int n);
   void setType(char c);
   void setSymb(char c);
+  void setDir(std::vector<std::string> directions);
 
   // Getter methods
+  std::vector<std::string> getDirs();
   char getSymb();
   char getType();
   int getRank();

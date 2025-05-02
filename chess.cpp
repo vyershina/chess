@@ -1,3 +1,4 @@
+#include <cassert>
 #include <fstream>  // for getting input from file
 #include <iostream>
 #include <regex>   // for input/move validation
@@ -21,14 +22,7 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves);
 void replaySystem() {
   std::vector<std::string> moves = parseInput();
   Board board;
-  // for (Piece piece : board.pieces) {
-  //   if (piece.getType() == 'Q') {
-  //     for (std::string move : piece.possibleMoves()) {
-  //       std::cout << move << "\n";
-  //     }
-  //     break;
-  //   }
-  // }
+
   for (int i = 0; i < moves.size(); i++) {
     int side = i % 2;
     std::cout << "\nmove: " << moves[i] << "\nside: " << side

@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <string>
 
@@ -26,14 +27,104 @@ Piece::Piece(Board* board, int side, int rank, int file, char type, char symb)
 // Return Value: None.
 void Piece::disambiguate(std::string move,
                          std::vector<std::string>& possible_moves) {
-  move.erase(move.begin() + 1);
   move.insert(1, 1, file + 'a');
   possible_moves.push_back(move);
   move.insert(2, std::to_string(rank + 1));
   possible_moves.push_back(move);
-  move.insert(3, 1, 'x');
-  possible_moves.push_back(move);
 }  // end disambiguate()
+
+// Base case: if direction the piece is headed in ends (end of board or blocked)
+// Input Parameters: A piece, its possible moves, the current rank and file we
+//                   are interested in, the direction which the piece is going
+//                   in, if the current square we're on is the starting position
+//                   or not
+// Process: Builds all possible moves for a piece on a certain square.
+//          Calls itself to go further in original direction.
+// Output: None.
+void Piece::getPosMovesRec(Piece piece,
+                           std::vector<std::string>& possible_moves,
+                           int curr_rank, int curr_file, std::string direction,
+                           bool start) {
+  std::string move;
+  if (!start) {
+    for (Piece tmp_piece : local_board->pieces) {
+      if (tmp_piece.getFile() == curr_file &&
+          tmp_piece.getRank() == curr_rank) {
+        if (tmp_piece.getSide() != piece.getSide()) {
+          move = piece.getType();
+          move += 'x';
+          move += curr_file + 'a';
+          move += std::to_string(curr_rank + 1);
+          possible_moves.push_back(move);
+          disambiguate(move, possible_moves);
+        }  // end if
+        return;
+      }  // end if
+    }  // end for
+    move = piece.getType();
+    move += curr_file + 'a';
+    move += std::to_string(curr_rank + 1);
+    possible_moves.push_back(move);
+    disambiguate(move, possible_moves);
+  }  // end if
+
+  if (direction == "n") {
+    if (curr_rank == 7) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank + 1, curr_file, direction,
+                   false);
+  }  // end if
+  if (direction == "w") {
+    if (curr_file == 0) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank, curr_file - 1, direction,
+                   false);
+  }  // end if
+  if (direction == "s") {
+    if (curr_rank == 0) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank - 1, curr_file, direction,
+                   false);
+  }  // end if
+  if (direction == "e") {
+    if (curr_file == 7) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank, curr_file + 1, direction,
+                   false);
+  }  // end if
+  if (direction == "nw") {
+    if (curr_rank == 7 || curr_file == 0) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank + 1, curr_file - 1,
+                   direction, false);
+  }  // end if
+  if (direction == "ne") {
+    if (curr_rank == 7 || curr_file == 7) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank + 1, curr_file + 1,
+                   direction, false);
+  }  // end if
+  if (direction == "sw") {
+    if (curr_rank == 0 || curr_file == 0) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank - 1, curr_file - 1,
+                   direction, false);
+  }  // end if
+  if (direction == "se") {
+    if (curr_rank == 0 || curr_file == 7) {
+      return;
+    }  // end if
+    getPosMovesRec(piece, possible_moves, curr_rank - 1, curr_file + 1,
+                   direction, false);
+  }  // end if
+}  // end getPosMovesRec()
 
 // Input Parameters: The side which the piece belongs to.
 //                   The file being checked.
@@ -110,287 +201,6 @@ std::vector<std::string> Piece::possibleMoves() {
     }  // end if
   }  // end if
 
-  // Rook
-  if (type == 'R') {
-    // up
-    for (int i = rank + 1; i < 8; i++) {
-      if (!isBlocked(side, file, i)) {
-        move = 'R';
-        move += file + 'a';
-        move += std::to_string(i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // down
-    for (int i = rank - 1; i >= 0; i--) {
-      if (!isBlocked(side, file, i)) {
-        move = 'R';
-        move += file + 'a';
-        move += std::to_string(i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // right
-    for (int i = file + 1; i < 8; i++) {
-      if (!isBlocked(side, i, rank)) {
-        move = 'R';
-        move += i + 'a';
-        move += std::to_string(rank + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // left
-    for (int i = file - 1; i >= 0; i--) {
-      if (!isBlocked(side, i, rank)) {
-        move = 'R';
-        move += i + 'a';
-        move += std::to_string(rank + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-  }  // end if
-
-  // Bishop
-  if (type == 'B') {
-    // top left
-    for (int i = 1; file - i >= 0 && rank + i < 8; i++) {
-      if (!isBlocked(side, file - i, rank + i)) {
-        move = 'B';
-        move += file - i + 'a';
-        move += std::to_string(rank + i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // top right
-    for (int i = 1; file + i < 8 && rank + i < 8; i++) {
-      if (!isBlocked(side, file + i, rank + i)) {
-        move = 'B';
-        move += file + i + 'a';
-        move += std::to_string(rank + i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // bottom left
-    for (int i = 1; file - i >= 0 && rank - i >= 0; i++) {
-      if (!isBlocked(side, file - i, rank - i)) {
-        move = 'B';
-        move += file - i + 'a';
-        move += std::to_string(rank - i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // bottom right
-    for (int i = 1; file + i < 8 && rank - i >= 0; i++) {
-      if (!isBlocked(side, file + i, rank - i)) {
-        move = 'B';
-        move += file + i + 'a';
-        move += std::to_string(rank - i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-  }  // end if
-
-  // Queen
-  if (type == 'Q') {
-    // up
-    for (int i = rank + 1; i < 8; i++) {
-      if (!isBlocked(side, file, i)) {
-        move = 'Q';
-        move += file + 'a';
-        move += std::to_string(i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // down
-    for (int i = rank - 1; i >= 0; i--) {
-      if (!isBlocked(side, file, i)) {
-        move = 'Q';
-        move += file + 'a';
-        move += std::to_string(i);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // right
-    for (int i = file + 1; i < 8; i++) {
-      if (!isBlocked(side, i, rank)) {
-        move = 'Q';
-        move += i + 'a';
-        move += std::to_string(rank + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // left
-    for (int i = file - 1; i >= 0; i--) {
-      if (!isBlocked(side, i, rank)) {
-        move = 'Q';
-        move += i + 'a';
-        move += std::to_string(rank + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // top left
-    for (int i = 1; file - i >= 0 && rank + i < 8; i++) {
-      if (!isBlocked(side, file - i, rank + i)) {
-        move = 'Q';
-        move += file - i + 'a';
-        move += std::to_string(rank + i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // top right
-    for (int i = 1; file + i < 8 && rank + i < 8; i++) {
-      if (!isBlocked(side, file + i, rank + i)) {
-        move = 'Q';
-        move += file + i + 'a';
-        move += std::to_string(rank + i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // bottom left
-    for (int i = 1; file - i >= 0 && rank - i >= 0; i++) {
-      if (!isBlocked(side, file - i, rank - i)) {
-        move = 'Q';
-        move += file - i + 'a';
-        move += std::to_string(rank - i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-
-    // bottom right
-    for (int i = 1; file + i < 8 && rank - i >= 0; i++) {
-      if (!isBlocked(side, file + i, rank - i)) {
-        move = 'Q';
-        move += file + i + 'a';
-        move += std::to_string(rank - i + 1);
-        possible_moves.push_back(move);
-        // taking
-        move.insert(1, 1, 'x');
-        possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
-      } else {
-        break;
-      }  // end if(s) and else(s)
-    }  // end for
-  }  // end if
-
   // King
   if (type == 'K') {
     // right
@@ -403,8 +213,6 @@ std::vector<std::string> Piece::possibleMoves() {
         // taking
         move.insert(1, 1, 'x');
         possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
       }  // end if
 
       // right up
@@ -417,8 +225,6 @@ std::vector<std::string> Piece::possibleMoves() {
           // taking
           move.insert(1, 1, 'x');
           possible_moves.push_back(move);
-          // disambiguate
-          disambiguate(move, possible_moves);
         }  // end if
       }  // end if
 
@@ -432,8 +238,6 @@ std::vector<std::string> Piece::possibleMoves() {
           // taking
           move.insert(1, 1, 'x');
           possible_moves.push_back(move);
-          // disambiguate
-          disambiguate(move, possible_moves);
         }  // end if
       }  // end if
     }  // end if
@@ -448,8 +252,6 @@ std::vector<std::string> Piece::possibleMoves() {
         // taking
         move.insert(1, 1, 'x');
         possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
       }  // end if
     }  // end if
 
@@ -463,8 +265,6 @@ std::vector<std::string> Piece::possibleMoves() {
         // taking
         move.insert(1, 1, 'x');
         possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
       }  // end if
     }  // end if
 
@@ -478,8 +278,6 @@ std::vector<std::string> Piece::possibleMoves() {
         // taking
         move.insert(1, 1, 'x');
         possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
       }  // end if
 
       // left up
@@ -492,8 +290,6 @@ std::vector<std::string> Piece::possibleMoves() {
           // taking
           move.insert(1, 1, 'x');
           possible_moves.push_back(move);
-          // disambiguate
-          disambiguate(move, possible_moves);
         }  // end if
       }  // end if
     }  // end if
@@ -508,8 +304,6 @@ std::vector<std::string> Piece::possibleMoves() {
         // taking
         move.insert(1, 1, 'x');
         possible_moves.push_back(move);
-        // disambiguate
-        disambiguate(move, possible_moves);
       }  // end if
     }  // end if
 
@@ -531,8 +325,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // down right
@@ -544,8 +336,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // up left
@@ -557,8 +347,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // down left
@@ -570,8 +358,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // right up
@@ -583,8 +369,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // right down
@@ -596,8 +380,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // left up
@@ -609,8 +391,6 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
 
     // left down
@@ -622,10 +402,11 @@ std::vector<std::string> Piece::possibleMoves() {
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
-      // disambiguate
-      disambiguate(move, possible_moves);
     }  // end if
   }  // end if
+  for (std::string move : possible_moves) {
+    disambiguate(move, possible_moves);
+  }
   return possible_moves;
 }  // end possibleMoves()
 
@@ -681,7 +462,11 @@ void Piece::setType(char c) { type = c; }
 
 void Piece::setSymb(char c) { symb = c; }
 
+void Piece::setDir(std::vector<std::string> dirs) { directions = dirs; }
+
 // Getter methods
+std::vector<std::string> Piece::getDirs() { return directions; }
+
 char Piece::getType() { return type; }
 
 char Piece::getSymb() { return symb; }

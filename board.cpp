@@ -17,22 +17,30 @@ Board::Board() {
 
   // Rooks
   Piece wrook1(this, 0, 0, 0, 'R', 'R');
+  wrook1.setDir({"n", "e", "w", "s"});
   pieces.push_back(wrook1);
   Piece wrook2(this, 0, 0, 7, 'R', 'R');
+  wrook2.setDir({"n", "e", "w", "s"});
   pieces.push_back(wrook2);
   Piece brook1(this, 1, 7, 0, 'R', 'r');
+  brook1.setDir({"n", "e", "w", "s"});
   pieces.push_back(brook1);
   Piece brook2(this, 1, 7, 7, 'R', 'r');
+  brook2.setDir({"n", "e", "w", "s"});
   pieces.push_back(brook2);
 
   // Bishop
   Piece wbishop1(this, 0, 0, 2, 'B', 'B');
+  wbishop1.setDir({"ne", "nw", "se", "sw"});
   pieces.push_back(wbishop1);
   Piece wbishop2(this, 0, 0, 5, 'B', 'B');
+  wbishop2.setDir({"ne", "nw", "se", "sw"});
   pieces.push_back(wbishop2);
   Piece bbishop1(this, 1, 7, 2, 'B', 'b');
+  bbishop1.setDir({"ne", "nw", "se", "sw"});
   pieces.push_back(bbishop1);
   Piece bbishop2(this, 1, 7, 5, 'B', 'b');
+  bbishop2.setDir({"ne", "nw", "se", "sw"});
   pieces.push_back(bbishop2);
 
   // Knights
@@ -53,8 +61,10 @@ Board::Board() {
 
   // Queens
   Piece wqueen(this, 0, 0, 3, 'Q', 'Q');
+  wqueen.setDir({"n", "e", "w", "s", "ne", "nw", "se", "sw"});
   pieces.push_back(wqueen);
   Piece bqueen(this, 1, 7, 3, 'Q', 'q');
+  bqueen.setDir({"n", "e", "w", "s", "ne", "nw", "se", "sw"});
   pieces.push_back(bqueen);
 }  // end Board()
 
@@ -126,7 +136,17 @@ void Board::passMove(std::string move, int side) {
 
   for (int i = 0; i < pieces.size(); i++) {
     if (pieces[i].getType() == piece_type && pieces[i].getSide() == side) {
-      for (std::string a_move : pieces[i].possibleMoves()) {
+      std::vector<std::string> possible_moves;
+      if (piece_type == 'Q' || piece_type == 'B' || piece_type == 'R') {
+        for (std::string direction : pieces[i].getDirs()) {
+          pieces[i].getPosMovesRec(pieces[i], possible_moves,
+                                   pieces[i].getRank(), pieces[i].getFile(),
+                                   direction, true);
+        }
+      } else {
+        possible_moves = pieces[i].possibleMoves();
+      }
+      for (std::string a_move : possible_moves) {
         if (a_move == move) {
           pieces[i].makeMove(&pieces[i], fin_file, fin_rank, castle, taking);
         }  // end if
