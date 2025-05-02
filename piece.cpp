@@ -322,9 +322,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file + 1 + 'a';
       move += std::to_string(rank + 3);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // down right
@@ -333,9 +335,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file + 1 + 'a';
       move += std::to_string(rank - 1);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // up left
@@ -344,9 +348,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file - 1 + 'a';
       move += std::to_string(rank + 3);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // down left
@@ -355,9 +361,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file - 1 + 'a';
       move += std::to_string(rank - 1);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // right up
@@ -366,9 +374,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file + 2 + 'a';
       move += std::to_string(rank + 2);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // right down
@@ -377,9 +387,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file + 2 + 'a';
       move += std::to_string(rank);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // left up
@@ -388,9 +400,11 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file - 2 + 'a';
       move += std::to_string(rank + 2);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
 
     // left down
@@ -399,14 +413,13 @@ std::vector<std::string> Piece::possibleMoves() {
       move += file - 2 + 'a';
       move += std::to_string(rank);
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
       // taking
       move.insert(1, 1, 'x');
       possible_moves.push_back(move);
+      disambiguate(move, possible_moves);
     }  // end if
   }  // end if
-  for (std::string move : possible_moves) {
-    disambiguate(move, possible_moves);
-  }
   return possible_moves;
 }  // end possibleMoves()
 

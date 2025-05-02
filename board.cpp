@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "board.hpp"
+#include "stats.hpp"
 
 Board::Board() {
   // Pawns
@@ -99,7 +100,7 @@ void Board::printBoard() {
   }  // end for
 }  // end printBoard()
 
-void Board::passMove(std::string move, int side) {
+void Board::passMove(std::string move, int side, Stats& gamestats) {
   int mv_len = move.length();
   int fin_file = move[mv_len - 2] - 'a';
   int fin_rank = move[mv_len - 1] - '1';
@@ -126,10 +127,25 @@ void Board::passMove(std::string move, int side) {
     move.erase(move.end() - 1);
   }  // end if
 
+  if (piece_type == 'Q') {
+    gamestats.queen_moves++;
+  } else if (piece_type == 'B') {
+    gamestats.bishop_moves++;
+  } else if (piece_type == 'R') {
+    gamestats.rook_moves++;
+  } else if (piece_type == 'N') {
+    gamestats.knight_moves++;
+  } else if (piece_type == 'K') {
+    gamestats.king_moves++;
+  } else if (piece_type == 'P') {
+    gamestats.pawn_moves++;
+  }
+
   // handle taking
   for (char c : move) {
     if (c == 'x') {
       taking = true;
+      gamestats.takes++;
       break;
     }  // end if
   }  // end for

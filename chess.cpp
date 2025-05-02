@@ -5,6 +5,7 @@
 #include <vector>  // for vectors
 
 #include "board.hpp"
+#include "stats.hpp"
 
 void replaySystem();
 
@@ -14,22 +15,60 @@ int countNewLines(const std::string* str);
 
 void movesInVector(std::string moves_str, std::vector<std::string>& moves);
 
+void printStats(Stats gamestats);
+
+// Input: None
+// Process: Calls replaySystem()
+// Output: None
+int main() {
+  replaySystem();
+  return 0;
+}  // end main()
+
 // Input Parameters: None.
 // Process: Calls parseInput() to get vector of parsed moves.
 //          Instantiates the game board.
 //          Feeds/Passes in the moves to the board.
 // Return Value: None.
 void replaySystem() {
-  std::vector<std::string> moves = parseInput();
-  Board board;
+  int choice;
+  std::cout << "Which would you like to do?\n";
+  std::cout << "1. Replay (Read from file)\n";
+  std::cout << "2. Play\n";
+  std::cout << "Your choice: ";
+  std::cin >> choice;
+  std::vector<std::string> moves;
+  if (choice == 1) {
+    moves = parseInput();
+  }
 
-  for (int i = 0; i < moves.size(); i++) {
-    int side = i % 2;
-    std::cout << "\nmove: " << moves[i] << "\nside: " << side
-              << "\nmove num: " << i + 1 << "\n";
-    board.passMove(moves[i], side);
-    board.printBoard();
-  }  // end for
+  Board board;
+  Stats gamestats;
+  bool side = 0;
+
+  if (choice == 1) {
+    for (int i = 0; i < moves.size(); i++) {
+      int side = i % 2;
+      std::cout << "\nmove: " << moves[i] << "\nside: " << side
+                << "\nmove num: " << i + 1 << "\n";
+      board.passMove(moves[i], side, gamestats);
+      board.printBoard();
+    }  // end for
+  } else if (choice == 2) {
+    while (true) {
+      std::string move;
+      std::cout << "Make your move: ";
+      std::cin >> move;
+      std::cout << '\n';
+      if (move == "end") {
+        break;
+      }
+      board.passMove(move, side, gamestats);
+      board.printBoard();
+      side = !side;
+    }
+  }
+  printStats(gamestats);
 }  // end replaySystem()
 
 // Input Parameters: None.
@@ -103,10 +142,13 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
   }  // end for
 }  // end movesInVector()
 
-// Input: None
-// Process: Calls replaySystem()
-// Output: None
-int main() {
-  replaySystem();
-  return 0;
-}  // end main()
+void printStats(Stats gamestats) {
+  std::cout << "\nGame stats:\n";
+  std::cout << "Number of pawn moves: " << gamestats.pawn_moves << '\n';
+  std::cout << "Number of queen moves: " << gamestats.queen_moves << '\n';
+  std::cout << "Number of bishop moves: " << gamestats.bishop_moves << '\n';
+  std::cout << "Number of rook moves: " << gamestats.rook_moves << '\n';
+  std::cout << "Number of king moves: " << gamestats.king_moves << '\n';
+  std::cout << "Number of knight moves: " << gamestats.knight_moves << '\n';
+  std::cout << "Number of takes: " << gamestats.takes << '\n';
+}
