@@ -111,9 +111,11 @@ Piece wrook1(this, 0, 0, 0, 'R', 'R');
 piece.hpp line 20
 ```cpp
 Piece(Board* board, int side, int file, int rank, char type, char symb);
-io-stream
-chess.cpp line 81
+```
 
+### io-stream
+chess.cpp line 81
+```cpp
   std::fstream game_file("game.txt");
   std::string moves_str;
   getline(game_file, moves_str);
