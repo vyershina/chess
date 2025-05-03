@@ -1,4 +1,3 @@
-#include <cassert>
 #include <fstream>  // for getting input from file
 #include <iostream>
 #include <regex>   // for input/move validation

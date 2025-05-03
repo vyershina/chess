@@ -1,6 +1,5 @@
-#include <ctime>
 #include <iostream>
-#include <string>
+#include <string>  // for strings
 
 #include "board.hpp"
 

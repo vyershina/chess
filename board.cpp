@@ -1,4 +1,4 @@
-#include <cstdlib>    // for idk
+#include <cstdlib>    // for exit
 #include <exception>  // for exceptions
 #include <iostream>
 
