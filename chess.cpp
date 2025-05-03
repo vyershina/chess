@@ -37,6 +37,11 @@ void replaySystem() {
   std::cout << "2. Play\n";
   std::cout << "Your choice: ";
   std::cin >> choice;
+  while (choice != 1 && choice != 2) {
+    std::cout << "Invalid input. Try again: ";
+    std::cin >> choice;
+    std::cout << '\n';
+  }
   std::vector<std::string> moves;
   if (choice == 1) {
     moves = parseInput();
