@@ -178,19 +178,13 @@ std::vector<std::string> Piece::possibleMoves() {
     if (side == 1) {
       // normal movement
       if (rank == 6) {
-        if (!isBlocked(0, file, rank - 1) && !isBlocked(0, file, rank - 2)) {
-          if (!isBlocked(1, file, rank - 1) && !isBlocked(1, file, rank - 2)) {
-            move = file + 'a';
-            move += std::to_string(rank - 1);
-            possible_moves.push_back(move);
-          }
-        }
-      }  // end if
-      if (!isBlocked(0, file, rank + 1) && !isBlocked(1, file, rank + 1)) {
         move = file + 'a';
-        move += std::to_string(rank);
+        move += std::to_string(rank - 1);
         possible_moves.push_back(move);
-      }
+      }  // end if
+      move = file + 'a';
+      move += std::to_string(rank);
+      possible_moves.push_back(move);
 
       // taking
       move = file + 'a';
