@@ -1,6 +1,7 @@
 #include <fstream>  // for getting input from file
 #include <iostream>
-#include <regex>   // for input/move validation
+#include <regex>  // for input/move validation
+#include <stdexcept>
 #include <vector>  // for vectors
 
 #include "board.hpp"
@@ -118,6 +119,7 @@ int countNewLines(const std::string* moves_str) {
 void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
   int i = 0;
   int move_num = 0;
+  bool err;
   std::regex valid_move(
       "(([RNBKQ])?([a-h])?([1-8])?(x)?([a-h][1-8])(\\+|\\#)?)"
       "|((O-O)(-O)?)"
@@ -127,10 +129,16 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
       if (i == 0) {
         continue;
       }  // end if
-      if (std::regex_match(moves[move_num], valid_move) == false) {
+      try {
+        if (std::regex_match(moves[move_num], valid_move) == false) {
+          err = true;
+          throw(err);
+        }  // end if
+      } catch (bool err) {
         std::cout << moves[move_num] << " -> ";
-        std::cout << "Invalid move detected!\n";
-      }  // end if
+        std::cout << "Invalid move detected! Terminating process.\n";
+        std::exit(-1);
+      }
       move_num++;
     } else if (moves_str[i] == '\0') {
       return;
