@@ -29,7 +29,7 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
         }  // end if
       } catch (bool err) {
         std::cout << moves[move_num] << " -> ";
-        std::cout << "Invalid move detected! Terminating process.\n";
+        std::cout << "Invalid move detected! Terminating process." << std::endl;
         std::exit(-1);
       }
       move_num++;
@@ -136,7 +136,8 @@ board.cpp line 82
               throw(found);
             }  // end if
           } catch (int found) {
-            std::cout << "\nTwo pieces are stacked on top of each other. "
+            std::cout << std::endl;
+            std::cout << "Two pieces are stacked on top of each other. "
                          "Terminating process. ";
             std::exit(-1);
           }  // end try and catch

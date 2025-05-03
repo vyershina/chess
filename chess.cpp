@@ -32,15 +32,15 @@ int main() {
 // Return Value: None.
 void replaySystem() {
   int choice;
-  std::cout << "Which would you like to do?\n";
-  std::cout << "1. Replay (Read from file)\n";
-  std::cout << "2. Play\n";
+  std::cout << "Which would you like to do?" << std::endl;
+  std::cout << "1. Replay (Read from file)" << std::endl;
+  std::cout << "2. Play" << std::endl;
   std::cout << "Your choice: ";
   std::cin >> choice;
   while (choice != 1 && choice != 2) {
     std::cout << "Invalid input. Try again: ";
     std::cin >> choice;
-    std::cout << '\n';
+    std::cout << std::endl;
   }
   std::vector<std::string> moves;
   if (choice == 1) {
@@ -53,9 +53,12 @@ void replaySystem() {
 
   if (choice == 1) {
     for (int i = 0; i < moves.size(); i++) {
+      // get rid of local side
       int side = i % 2;
-      std::cout << "\nmove: " << moves[i] << "\nside: " << side
-                << "\nmove num: " << i + 1 << "\n";
+      std::cout << std::endl;
+      std::cout << "move: " << moves[i] << std::endl
+                << "side: " << side << std::endl
+                << "move num: " << i + 1 << std::endl;
       board.passMove(moves[i], side, gamestats);
       board.printBoard();
     }  // end for
@@ -64,7 +67,7 @@ void replaySystem() {
       std::string move;
       std::cout << "Make your move: ";
       std::cin >> move;
-      std::cout << '\n';
+      std::cout << std::endl;
       if (move == "end") {
         break;
       }
@@ -125,6 +128,7 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
       "|((O-O)(-O)?)"
       "|(([a-h][1-8])(=)([RNBQ]))");
   for (int i = 0; i < moves_str.length(); i++) {
+    // TODO: explain
     if (moves_str[i] == '\n') {
       if (i == 0) {
         continue;
@@ -136,10 +140,11 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
         }  // end if
       } catch (bool err) {
         std::cout << moves[move_num] << " -> ";
-        std::cout << "Invalid move detected! Terminating process.\n";
+        std::cout << "Invalid move detected! Terminating process." << std::endl;
         std::exit(-1);
       }
       move_num++;
+      // use str size instead of null
     } else if (moves_str[i] == '\0') {
       return;
     } else if (moves_str[i] == ' ') {
@@ -155,12 +160,15 @@ void movesInVector(std::string moves_str, std::vector<std::string>& moves) {
 }  // end movesInVector()
 
 void printStats(Stats gamestats) {
-  std::cout << "\nGame stats:\n";
-  std::cout << "Number of pawn moves: " << gamestats.pawn_moves << '\n';
-  std::cout << "Number of queen moves: " << gamestats.queen_moves << '\n';
-  std::cout << "Number of bishop moves: " << gamestats.bishop_moves << '\n';
-  std::cout << "Number of rook moves: " << gamestats.rook_moves << '\n';
-  std::cout << "Number of king moves: " << gamestats.king_moves << '\n';
-  std::cout << "Number of knight moves: " << gamestats.knight_moves << '\n';
-  std::cout << "Number of takes: " << gamestats.takes << '\n';
+  std::cout << std::endl;
+  std::cout << "Game stats:" << std::endl;
+  std::cout << "Number of pawn moves: " << gamestats.pawn_moves << std::endl;
+  std::cout << "Number of queen moves: " << gamestats.queen_moves << std::endl;
+  std::cout << "Number of bishop moves: " << gamestats.bishop_moves
+            << std::endl;
+  std::cout << "Number of rook moves: " << gamestats.rook_moves << std::endl;
+  std::cout << "Number of king moves: " << gamestats.king_moves << std::endl;
+  std::cout << "Number of knight moves: " << gamestats.knight_moves
+            << std::endl;
+  std::cout << "Number of takes: " << gamestats.takes << std::endl;
 }

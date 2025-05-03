@@ -84,7 +84,8 @@ void Board::printBoard() {
               throw(found);
             }  // end if
           } catch (int found) {
-            std::cout << "\nTwo pieces are stacked on top of each other. "
+            std::cout << std::endl;
+            std::cout << "Two pieces are stacked on top of each other. "
                          "Terminating process. ";
             std::exit(-1);
           }  // end try and catch
@@ -96,15 +97,17 @@ void Board::printBoard() {
       }  // end if
       exists = false;
     }  // end for
-    std::cout << "\n";
+    std::cout << std::endl;
   }  // end for
 }  // end printBoard()
 
 void Board::passMove(std::string move, int side, Stats& gamestats) {
   int mv_len = move.length();
+  // explain why using last character
   int fin_file = move[mv_len - 2] - 'a';
   int fin_rank = move[mv_len - 1] - '1';
   int castle = 0;
+  // piece_type explain
   char piece_type = move[0];
   bool taking = false;
 
@@ -124,6 +127,7 @@ void Board::passMove(std::string move, int side, Stats& gamestats) {
   if (move[mv_len - 1] == '+' || move[mv_len - 1] == '#') {
     fin_file = move[mv_len - 3] - 'a';
     fin_rank = move[mv_len - 2] - '1';
+    // comment why removed
     move.erase(move.end() - 1);
   }  // end if
 
